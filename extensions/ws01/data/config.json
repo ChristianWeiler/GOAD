@@ -18,8 +18,25 @@
               },
               "security": ["enable_run_as_ppl", "asr", "powershell_restrict"],
               "security_vars": {
-                  "asr" : { "block lsass stealing": {"ruleid" : "9e6c4e1f-7d60-472f-ba1a-a39ef669e4b2"},
-                            "block PSExec and WMI": {"ruleid" : "d1e49aac-8f56-4280-b9ba-993a6d77406c"}}
+                  "asr" : {
+                      "block executable content from email and webmail": {"ruleid" : "be9ba2d9-53ea-4cdc-84e5-9b1eeee46550"},
+                      "block all Office applications from creating child processes": {"ruleid" : "d4f940ab-401b-4efc-aadc-ad5f3c50688a"},
+                      "block Office applications from creating executable content": {"ruleid" : "3b576869-a4ec-4529-8536-b80a7769e899"},
+                      "block Office applications from injecting code into other processes": {"ruleid" : "75668c1f-73b5-4cf0-bb93-3ecf5cb7cc84"},
+                      "block JavaScript or VBScript from launching downloaded executable content": {"ruleid" : "d3e037e1-3eb8-44c8-a917-57927947596d"},
+                      "block execution of potentially obfuscated scripts": {"ruleid" : "5beb7efe-fd9a-4556-801d-275e5ffc04cc"},
+                      "block Win32 API calls from Office macros": {"ruleid" : "92e97fa1-2edf-4476-bdd6-9dd0b4dddc7b"},
+                      "block executable files from running unless they meet prevalence age or trusted list criterion": {"ruleid" : "01443614-cd74-433a-b99e-2ecdc07bfc25"},
+                      "use advanced protection against ransomware": {"ruleid" : "c1db55ab-c21a-4637-bb3f-a12568109d35"},
+                      "block credential stealing from Windows local security authority subsystem": {"ruleid" : "9e6c4e1f-7d60-472f-ba1a-a39ef669e4b2"},
+                      "block process creations originating from PSExec and WMI commands": {"ruleid" : "d1e49aac-8f56-4280-b9ba-993a6d77406c"},
+                      "block untrusted and unsigned processes that run from USB": {"ruleid" : "b2b3f03d-6a65-4f7b-a9c7-1c7ef74a9ba4"},
+                      "block Office communication application from creating child processes": {"ruleid" : "26190899-1602-49e8-8b27-eb1d0a1ce869"},
+                      "block Adobe Reader from creating child processes": {"ruleid" : "7674ba52-37eb-4a4f-a9a1-f0f9a1619a2c"},
+                      "block persistence through WMI event subscription": {"ruleid" : "e6db77e5-3df2-4cf1-b95a-636979351e5b"},
+                      "block abuse of exploited vulnerable signed drivers": {"ruleid" : "56a863a9-875e-4185-98a7-b882c64b5ce5"},
+                      "block webshell creation for servers": {"ruleid" : "a8f5898e-1dc8-49a9-9878-85004b8a61e6"}
+                  }
               }
           }
       }
