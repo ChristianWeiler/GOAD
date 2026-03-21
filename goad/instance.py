@@ -1,6 +1,7 @@
 import json
 import shutil
 import os
+import yaml
 from jinja2 import Template, Environment, FileSystemLoader
 from goad.goadpath import *
 from goad.log import Log
@@ -182,8 +183,24 @@ class LabInstance:
             vagrantfile.write(envfile_content)
             Log.info(f'Instance .env created : {Utils.get_relative_path(instance_env_file)}')
 
+    def _merge_ludus_vm_entry(self, base_vm, ext_vm):
+        """Merge an extension VM entry into an existing base VM entry.
+
+        Appends roles and merges role_vars from the extension into the base.
+        """
+        if 'roles' in ext_vm:
+            if 'roles' not in base_vm:
+                base_vm['roles'] = []
+            for role in ext_vm['roles']:
+                if role not in base_vm['roles']:
+                    base_vm['roles'].append(role)
+        if 'role_vars' in ext_vm:
+            if 'role_vars' not in base_vm:
+                base_vm['role_vars'] = {}
+            base_vm['role_vars'].update(ext_vm['role_vars'])
+
     def _create_ludus_config_file(self):
-        # load lab vagrantfile
+        # load lab config
         lab_environment = Environment(loader=FileSystemLoader(GoadPath.get_lab_provider_path(self.lab_name, self.provider_name)))
         lab_ludus_config_file_template = lab_environment.get_template("config.yml")
         lab_ludus_config_file_content = lab_ludus_config_file_template.render(
@@ -192,33 +209,62 @@ class LabInstance:
             ip_range=self.ip_range
         )
 
-        # load lab extensions
-        lab_extensions_ludus_config_file_content = ''
+        # parse base lab config into structured data
+        lab_config = yaml.safe_load(lab_ludus_config_file_content)
+        if lab_config is None:
+            lab_config = {'ludus': []}
+        base_vms = lab_config.get('ludus', [])
+
+        # build lookup of base VMs by vm_name
+        base_vm_index = {}
+        for vm in base_vms:
+            base_vm_index[vm['vm_name']] = vm
+
+        # load and merge extensions
         for extension in self.extensions:
             extension_provider_folder = GoadPath.get_extension_providers_provider_path(extension, self.provider_name)
             extension_environment = Environment(loader=FileSystemLoader(extension_provider_folder))
             lab_extension_ludus_config_file_template = extension_environment.get_template("config.yml")
-            lab_extensions_ludus_config_file_content += lab_extension_ludus_config_file_template.render(
+            ext_content = lab_extension_ludus_config_file_template.render(
                 lab_name=self.lab_name,
                 range_id="{{ range_id }}",
                 ip_range=self.ip_range
-            ) + "\n"
+            )
+            ext_vms = yaml.safe_load(ext_content)
+            if ext_vms is None:
+                continue
+            # extension configs are list items without a top-level key
+            if isinstance(ext_vms, list):
+                ext_vm_list = ext_vms
+            elif isinstance(ext_vms, dict) and 'ludus' in ext_vms:
+                ext_vm_list = ext_vms['ludus']
+            else:
+                ext_vm_list = ext_vms if isinstance(ext_vms, list) else []
 
-        # load lab + extension into instance config
-        environment = Environment(loader=FileSystemLoader(GoadPath.get_template_path(self.provider_name)))
-        ludus_config_file_template = environment.get_template("config.yml")
-        ludus_config_file_template_content = ludus_config_file_template.render(
-            lab_name=self.lab_name,
-            lab=lab_ludus_config_file_content,
-            extensions=lab_extensions_ludus_config_file_content,
-            provider_name=self.provider_name
+            for ext_vm in ext_vm_list:
+                vm_name = ext_vm.get('vm_name')
+                if vm_name and vm_name in base_vm_index:
+                    # merge roles/role_vars into existing VM
+                    self._merge_ludus_vm_entry(base_vm_index[vm_name], ext_vm)
+                else:
+                    # new VM from extension
+                    base_vms.append(ext_vm)
+                    if vm_name:
+                        base_vm_index[vm_name] = ext_vm
+
+        # serialize merged config
+        ludus_config_file_template_content = yaml.dump(
+            {'ludus': base_vms},
+            default_flow_style=False,
+            sort_keys=False,
+            allow_unicode=True
         )
 
-        # create vagrantfile
+        # write config file
         instance_ludus_file = self.instance_provider_path + sep + 'config.yml'
         with open(instance_ludus_file, mode="w", encoding="utf-8") as ludusfile:
             ludusfile.write(ludus_config_file_template_content)
-            Log.info(f'Instance vagrantfile created : {Utils.get_relative_path(instance_ludus_file)}')
+            Log.info(f'Instance ludus config created : {Utils.get_relative_path(instance_ludus_file)}')
 
     def _create_terraform_folder(self):
         # load lab files

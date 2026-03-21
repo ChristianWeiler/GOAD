@@ -7,7 +7,3 @@
     cpus: 2
     windows:
       sysprep: true
-    roles:
-      - bagelbyt3s.ludus_adfs.import_root_cert
-    role_vars:
-      adfs_CA: "sevenkingdoms-KINGSLANDING-CA"

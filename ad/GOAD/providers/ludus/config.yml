@@ -10,9 +10,6 @@ ludus:
       sysprep: true
     roles:
       - ludus_enable_mdi_gpo
-      - bagelbyt3s.ludus_adfs.import_root_cert
-    role_vars:
-      adfs_CA: "sevenkingdoms-KINGSLANDING-CA"
   - vm_name: "{{ range_id }}-GOAD-DC02"
     hostname: "{{ range_id }}-DC02"
     template: win2022-server-x64-template
@@ -24,9 +21,6 @@ ludus:
       sysprep: true
     roles:
       - ludus_enable_mdi_gpo
-      - bagelbyt3s.ludus_adfs.import_root_cert
-    role_vars:
-      adfs_CA: "sevenkingdoms-KINGSLANDING-CA"
   - vm_name: "{{ range_id }}-GOAD-DC03"
     hostname: "{{ range_id }}-DC03"
     template: win2016-server-x64-template
@@ -38,9 +32,6 @@ ludus:
       sysprep: true
     roles:
       - ludus_enable_mdi_gpo
-      - bagelbyt3s.ludus_adfs.import_root_cert
-    role_vars:
-      adfs_CA: "sevenkingdoms-KINGSLANDING-CA"
   - vm_name: "{{ range_id }}-GOAD-SRV02"
     hostname: "{{ range_id }}-SRV02"
     template: win2019-server-x64-template
@@ -50,10 +41,6 @@ ludus:
     cpus: 2
     windows:
       sysprep: true
-    roles:
-      - bagelbyt3s.ludus_adfs.import_root_cert
-    role_vars:
-      adfs_CA: "sevenkingdoms-KINGSLANDING-CA"
   - vm_name: "{{ range_id }}-GOAD-SRV03"
     hostname: "{{ range_id }}-SRV03"
     template: win2019-server-x64-template
@@ -65,6 +52,3 @@ ludus:
       sysprep: true
     roles:
       - ludus_enable_mdi_gpo
-      - bagelbyt3s.ludus_adfs.import_root_cert
-    role_vars:
-      adfs_CA: "sevenkingdoms-KINGSLANDING-CA"
