@@ -1,0 +1,11 @@
+{
+    "name": "elastic",
+    "description": "Deploy Elastic stack (Elasticsearch, Kibana, Fleet) via Ludus roles and install Elastic agents on DC04 and WS01",
+    "machines": [
+        "elastic"
+    ],
+    "compatibility": [
+        "*"
+    ],
+    "impact": "Ludus-only extension. Requires ludus_elastic_container and ludus_elastic_agent roles installed on the Ludus server. Requires dc04 and ws01 extensions."
+}

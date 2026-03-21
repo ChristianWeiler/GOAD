@@ -1,0 +1,12 @@
+{
+    "name": "adfs",
+    "description": "Deploy Active Directory Federation Services (ADFS) with Entra ID integration to sevenkingdoms.local",
+    "machines": [
+        "adfs (oldtown.sevenkingdoms.local)",
+        "entra (sunspear.sevenkingdoms.local)"
+    ],
+    "compatibility": [
+        "GOAD"
+    ],
+    "impact": "Ludus-only extension. Requires bagelbyt3s.ludus_adfs collection installed on the Ludus server. Adds import_root_cert role to all domain-joined VMs. Requires ADCS on dc01."
+}

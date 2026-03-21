@@ -1,0 +1,43 @@
+  - vm_name: "{{ range_id }}-GOAD-ADFS"
+    hostname: "{{ range_id }}-ADFS"
+    template: win2022-server-x64-template
+    vlan: 10
+    ip_last_octet: 14
+    ram_gb: 4
+    cpus: 2
+    windows:
+      sysprep: true
+    domain:
+      fqdn: sevenkingdoms.local
+      role: member
+    roles:
+      - bagelbyt3s.ludus_adfs.import_root_cert
+      - bagelbyt3s.ludus_adfs.install_adfs
+    role_vars:
+      adfs_service_account: "adfs_svc"
+      adfs_service_account_password: "ADFS_S3rvic3!"
+      adfs_service_display_name: "ADFS Service"
+      adfs_hostname: "oldtown.sevenkingdoms.local"
+      adfs_FQDN_CA: "kingslanding.sevenkingdoms.local\\sevenkingdoms-KINGSLANDING-CA"
+      adfs_CA: "sevenkingdoms-KINGSLANDING-CA"
+      adfs_certificate_subject: "CN=oldtown.sevenkingdoms.local, O=SevenKingdoms, C=US"
+  - vm_name: "{{ range_id }}-GOAD-ENTRA"
+    hostname: "{{ range_id }}-ENTRA"
+    template: win2022-server-x64-template
+    vlan: 10
+    ip_last_octet: 15
+    ram_gb: 4
+    cpus: 2
+    windows:
+      sysprep: true
+    domain:
+      fqdn: sevenkingdoms.local
+      role: member
+    roles:
+      - bagelbyt3s.ludus_adfs.import_root_cert
+      - bagelbyt3s.ludus_adfs.entra_prep
+    role_vars:
+      adfs_CA: "sevenkingdoms-KINGSLANDING-CA"
+      ludus_entra_join_svc_account: "entra_svc"
+      ludus_entra_join_svc_account_password: "Entr@_S3rvic3!"
+      ludus_entra_join_alt_upn: ""

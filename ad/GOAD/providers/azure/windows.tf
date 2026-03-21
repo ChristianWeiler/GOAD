@@ -15,7 +15,7 @@
   name               = "dc02"
   publisher          = "MicrosoftWindowsServer"
   offer              = "WindowsServer"
-  windows_sku        = "2019-Datacenter"
+  windows_sku        = "2022-Datacenter"
   windows_version    = "latest"
   private_ip_address = "{{ip_range}}.11"
   password           = "NgtI75cKV+Pu"

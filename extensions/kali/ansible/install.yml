@@ -1,0 +1,19 @@
+---
+# read global configuration file and set up adapters
+- import_playbook: "../../../ansible/data.yml"
+  vars:
+    data_path: "../ad/{{domain_name}}/data/"
+  tags: 'data'
+
+# Configure /etc/hosts for lab name resolution
+- name: "Configure Kali for lab access"
+  hosts: kali
+  become: yes
+  tasks:
+    - name: Add lab hosts to /etc/hosts
+      ansible.builtin.lineinfile:
+        path: /etc/hosts
+        line: "{{ hostvars[item].ansible_host }} {{ lab.hosts[item].hostname }}.{{ lab.hosts[item].domain }} {{ lab.hosts[item].hostname }}"
+        state: present
+      loop: "{{ lab.hosts.keys() | list }}"
+      when: item in lab.hosts and 'hostname' in lab.hosts[item] and 'domain' in lab.hosts[item]

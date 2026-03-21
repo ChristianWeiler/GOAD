@@ -1,0 +1,30 @@
+---
+# read global configuration file and set up adapters
+- import_playbook: "../../../ansible/data.yml"
+  vars:
+    data_path: "../ad/{{domain_name}}/data/"
+  tags: 'data'
+
+# Configure DNS record for GitLab on DC01
+- name: "Setup GitLab DNS record on domain controller"
+  hosts: dc01
+  roles:
+    - { role: 'add_dns_record', tags: 'add_dns_record' }
+  vars:
+    domain: "sevenkingdoms.local"
+    record_name: "gitlab"
+    record_type: "A"
+    record_value: "{{ hostvars['gitlab'].ansible_host }}"
+
+# Configure Kerberos authentication between ADFS and GitLab
+- name: "Setup ADFS Kerberos authentication for GitLab"
+  hosts: dc01
+  roles:
+    - role: bagelbyt3s.ludus_adfs.adfs_kerberos_auth
+  vars:
+    dns_name: "gitlab"
+    dns_zone: "sevenkingdoms.local"
+    dns_ip: "{{ hostvars['gitlab'].ansible_host }}"
+    adfs_service_account: "SEVENKINGDOMS\\adfs_svc"
+    adfs_fqdn: "oldtown.sevenkingdoms.local"
+    target_ou_dn: "DC=sevenkingdoms,DC=local"

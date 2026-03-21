@@ -1,0 +1,11 @@
+{
+    "name": "kali",
+    "description": "Add a Kali Linux attack VM to the lab",
+    "machines": [
+        "kali"
+    ],
+    "compatibility": [
+        "*"
+    ],
+    "impact": "Ludus-only extension. Adds an external attacker VM on the same VLAN as the lab. Not domain-joined."
+}

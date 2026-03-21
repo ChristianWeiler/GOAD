@@ -1,0 +1,11 @@
+{
+    "name": "gitlab",
+    "description": "Deploy GitLab with ADFS SSO and Kerberos authentication",
+    "machines": [
+        "gitlab"
+    ],
+    "compatibility": [
+        "GOAD"
+    ],
+    "impact": "Ludus-only extension. Requires bagelbyt3s.ludus_adfs collection installed on the Ludus server. Requires adfs extension."
+}

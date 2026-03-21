@@ -1,0 +1,18 @@
+  - vm_name: "{{ range_id }}-GOAD-GITLAB"
+    hostname: "{{ range_id }}-GITLAB"
+    template: debian-12-x64-server-template
+    vlan: 10
+    ip_last_octet: 52
+    ram_gb: 8
+    cpus: 2
+    linux: true
+    roles:
+      - bagelbyt3s.ludus_adfs.install_gitlab
+    role_vars:
+      gitlab_domain: "gitlab.sevenkingdoms.local"
+      adfs_fqdn: "oldtown.sevenkingdoms.local"
+      adfs_host: "{{ range_id }}-GOAD-ADFS"
+      adfs_service_account: "SEVENKINGDOMS\\adfs_svc"
+      dc_host: "{{ range_id }}-GOAD-DC01"
+      gitlab_ip: "{{ip_range}}.52"
+      gitlab_version: "18.6.2"

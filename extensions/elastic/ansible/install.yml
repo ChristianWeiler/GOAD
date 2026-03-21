@@ -1,0 +1,90 @@
+---
+# read global configuration file and set up adapters
+- import_playbook: "../../../ansible/data.yml"
+  vars:
+    data_path: "../ad/{{domain_name}}/data/"
+  tags: 'data'
+
+# Retrieve enrollment token from the Elastic container server
+- name: "Retrieve Elastic enrollment token"
+  hosts: elastic_server
+  become: yes
+  tasks:
+    - name: Read enrollment token from elastic container
+      ansible.builtin.slurp:
+        path: /opt/elastic_container/enrollment_token.txt
+      register: enrollment_token_raw
+
+    - name: Set enrollment token fact
+      ansible.builtin.set_fact:
+        elastic_enrollment_token: "{{ enrollment_token_raw.content | b64decode | trim }}"
+
+# Install Elastic Agent on DC04 and WS01
+- name: "Install Elastic Agent on monitored hosts"
+  hosts: elastic_agent
+  vars:
+    elastic_agent_version: "9.3.1"
+    elastic_fleet_server: "https://{{ hostvars['elastic'].ansible_host }}:8220"
+    elastic_enrollment_token: "{{ hostvars['elastic'].elastic_enrollment_token }}"
+    elastic_agent_zip: "elastic-agent-{{ elastic_agent_version }}-windows-x86_64.zip"
+    elastic_agent_dir: "elastic-agent-{{ elastic_agent_version }}-windows-x86_64"
+    elastic_install_path: "C:\\elastic"
+    sysmon_install_path: "C:\\Program Files (x86)\\Sysmon"
+  tasks:
+    - name: Create install directory
+      ansible.windows.win_file:
+        path: "{{ elastic_install_path }}"
+        state: directory
+
+    - name: Check if Elastic Agent is already installed
+      ansible.windows.win_service_info:
+        name: "Elastic Agent"
+      register: elastic_agent_service
+
+    - name: Download Elastic Agent
+      ansible.windows.win_get_url:
+        url: "https://artifacts.elastic.co/downloads/beats/elastic-agent/{{ elastic_agent_zip }}"
+        dest: "{{ elastic_install_path }}\\{{ elastic_agent_zip }}"
+      when: not (elastic_agent_service.exists | default(false))
+
+    - name: Extract Elastic Agent
+      community.windows.win_unzip:
+        src: "{{ elastic_install_path }}\\{{ elastic_agent_zip }}"
+        dest: "{{ elastic_install_path }}"
+        creates: "{{ elastic_install_path }}\\{{ elastic_agent_dir }}"
+      when: not (elastic_agent_service.exists | default(false))
+
+    - name: Install Elastic Agent
+      ansible.windows.win_shell: |
+        & "{{ elastic_install_path }}\{{ elastic_agent_dir }}\elastic-agent.exe" install --url="{{ elastic_fleet_server }}" --enrollment-token="{{ elastic_enrollment_token }}" --force --insecure
+      when: not (elastic_agent_service.exists | default(false))
+
+    - name: Download Sysmon
+      ansible.windows.win_get_url:
+        url: "https://download.sysinternals.com/files/Sysmon.zip"
+        dest: "{{ elastic_install_path }}\\Sysmon.zip"
+      register: sysmon_download
+      ignore_errors: true
+
+    - name: Create Sysmon directory
+      ansible.windows.win_file:
+        path: "{{ sysmon_install_path }}"
+        state: directory
+
+    - name: Extract Sysmon
+      community.windows.win_unzip:
+        src: "{{ elastic_install_path }}\\Sysmon.zip"
+        dest: "{{ sysmon_install_path }}"
+      when: sysmon_download is succeeded
+
+    - name: Check if Sysmon service exists
+      ansible.windows.win_service_info:
+        name: "Sysmon64"
+      register: sysmon_service
+
+    - name: Install Sysmon
+      ansible.windows.win_shell: |
+        & "{{ sysmon_install_path }}\Sysmon64.exe" -accepteula -i
+      when:
+        - sysmon_download is succeeded
+        - not (sysmon_service.exists | default(false))

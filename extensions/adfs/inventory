@@ -1,0 +1,20 @@
+[default]
+{% if provider_name == 'aws' or provider_name == 'azure' %}
+adfs ansible_host={{ip_range}}.14 dns_domain=dc01 dict_key=adfs ansible_user=ansible ansible_password=Kj7cP+2xRm91
+entra ansible_host={{ip_range}}.15 dns_domain=dc01 dict_key=entra ansible_user=ansible ansible_password=Rm3xQ+7wPk45
+{% else %}
+adfs ansible_host={{ip_range}}.14 dns_domain=dc01 dict_key=adfs
+entra ansible_host={{ip_range}}.15 dns_domain=dc01 dict_key=entra
+{% endif %}
+
+[domain]
+adfs
+entra
+
+[extensions]
+adfs
+entra
+
+[defender_on]
+adfs
+entra

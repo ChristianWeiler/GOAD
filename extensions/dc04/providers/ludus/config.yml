@@ -1,13 +1,14 @@
-  - vm_name: "{{ range_id }}-GOAD-WS01"
-    hostname: "{{ range_id }}-WS01"
-    template: win11-24h2-x64-enterprise-tpm-template
+  - vm_name: "{{ range_id }}-GOAD-DC04"
+    hostname: "{{ range_id }}-DC04"
+    template: win2025-server-x64-tpm-template
     vlan: 10
-    ip_last_octet: 31
+    ip_last_octet: 13
     ram_gb: 4
     cpus: 2
     windows:
       sysprep: true
     roles:
+      - curi0usJack.ludus_enable_mdi_gpo
       - bagelbyt3s.ludus_adfs.import_root_cert
     role_vars:
       adfs_CA: "sevenkingdoms-KINGSLANDING-CA"

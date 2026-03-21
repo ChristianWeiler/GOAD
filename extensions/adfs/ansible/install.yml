@@ -1,0 +1,44 @@
+---
+# read global configuration file and set up adapters
+- import_playbook: "../../../ansible/data.yml"
+  vars:
+    data_path: "../ad/{{domain_name}}/data/"
+  tags: 'data'
+
+# read local configuration file
+- name: "Read local config file"
+  hosts: domain:extensions
+  connection: local
+  vars_files:
+    - "../data/config.json"
+  tasks:
+    - name: merge lab variable with local config
+      set_fact:
+        lab: "{{ lab|combine(lab_extension, recursive=True) }}"
+
+- name: prepare adfs and entra servers
+  hosts: adfs:entra
+  roles:
+    # build.yml
+    - { role: 'common', tags: 'common', http_proxy: "{{enable_http_proxy}}" }
+    - { role: 'settings/keyboard', tags: 'keyboard', layouts: "{{keyboard_layouts}}" }
+    # ad-servers.yml
+    - { role: 'settings/admin_password', tags: 'admin_password' }
+    - { role: 'settings/hostname', tags: 'hostname' }
+    # ad-members.yml
+    - { role: 'member_server', tags: 'server' }
+    # ad-relations.yml
+    - { role: "settings/adjust_rights", tags: 'adjust_rights' }
+    - { role: "settings/user_rights", tags: 'adjust_rights' }
+  vars:
+    local_admin_password: "{{lab.hosts[dict_key].local_admin_password}}"
+    hostname: "{{lab.hosts[dict_key].hostname}}"
+    member_domain: "{{lab.hosts[dict_key].domain}}"
+    domain_username: "{{member_domain}}\\{{admin_user}}"
+    domain_password: "{{lab.domains[member_domain].domain_password}}"
+    local_groups: "{{lab.hosts[dict_key].local_groups  | default({}) }}"
+
+- name: "Setup enable defender"
+  hosts: adfs:entra
+  roles:
+    - { role: 'settings/windows_defender', tags: 'windows_defender', windows_defender_status: 'on' }

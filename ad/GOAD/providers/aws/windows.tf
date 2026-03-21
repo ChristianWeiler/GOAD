@@ -13,7 +13,7 @@
 "dc02" = {
   name               = "dc02"
   domain             = "north.sevenkingdoms.local"
-  windows_sku        = "2019-Datacenter"
+  windows_sku        = "2022-Datacenter"
   ami                = "ami-03440f0d88fea1060"
   instance_type      = "t2.medium"
   private_ip_address = "{{ip_range}}.11"

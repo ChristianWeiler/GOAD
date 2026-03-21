@@ -1,0 +1,14 @@
+  - vm_name: "{{ range_id }}-GOAD-ELASTIC"
+    hostname: "{{ range_id }}-ELASTIC"
+    template: debian-12-x64-server-template
+    vlan: 10
+    ip_last_octet: 51
+    ram_gb: 8
+    cpus: 4
+    linux: true
+    roles:
+      - badsectorlabs.ludus_elastic_container
+    role_vars:
+      ludus_elastic_container_install_path: /opt/elastic_container
+      ludus_elastic_password: "elasticpassword"
+      ludus_elastic_stack_version: "9.3.1"

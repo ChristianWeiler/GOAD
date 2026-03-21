@@ -1,0 +1,40 @@
+{
+  "lab_extension" : {
+      "hosts" : {
+          "adfs" : {
+              "hostname" : "oldtown",
+              "type" : "server",
+              "local_admin_password": "Kj7cP+2xRm91",
+              "domain" : "sevenkingdoms.local",
+              "path" : "DC=sevenkingdoms,DC=local",
+              "local_groups" : {
+                  "Administrators" : [
+                      "sevenkingdoms\\robert.baratheon"
+                  ],
+                  "Remote Desktop Users" : [
+                      "sevenkingdoms\\Small Council"
+                  ]
+              },
+              "security": [],
+              "security_vars": {}
+          },
+          "entra" : {
+              "hostname" : "sunspear",
+              "type" : "server",
+              "local_admin_password": "Rm3xQ+7wPk45",
+              "domain" : "sevenkingdoms.local",
+              "path" : "DC=sevenkingdoms,DC=local",
+              "local_groups" : {
+                  "Administrators" : [
+                      "sevenkingdoms\\robert.baratheon"
+                  ],
+                  "Remote Desktop Users" : [
+                      "sevenkingdoms\\Small Council"
+                  ]
+              },
+              "security": [],
+              "security_vars": {}
+          }
+      }
+  }
+}

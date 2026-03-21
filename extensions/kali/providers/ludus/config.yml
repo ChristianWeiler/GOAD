@@ -1,0 +1,8 @@
+  - vm_name: "{{ range_id }}-GOAD-KALI"
+    hostname: "{{ range_id }}-KALI"
+    template: kali-x64-desktop-template
+    vlan: 10
+    ip_last_octet: 99
+    ram_gb: 4
+    cpus: 2
+    linux: true

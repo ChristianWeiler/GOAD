@@ -1,0 +1,13 @@
+{
+    "name": "dc04",
+    "description": "Add a hardened replica domain controller (Windows Server 2025) to sevenkingdoms.local",
+    "machines": [
+        "dc04 (highgarden.sevenkingdoms.local)"
+    ],
+    "compatibility": [
+        "GOAD",
+        "GOAD-Light",
+        "GOAD-Mini"
+    ],
+    "impact": "none"
+}

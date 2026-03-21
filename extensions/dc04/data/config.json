@@ -1,0 +1,26 @@
+{
+  "lab_extension" : {
+      "hosts" : {
+          "dc04" : {
+              "hostname" : "highgarden",
+              "type" : "dc",
+              "local_admin_password": "8dCT-DJjgScp",
+              "domain" : "sevenkingdoms.local",
+              "path" : "DC=sevenkingdoms,DC=local",
+              "local_groups" : {
+                  "Administrators" : [
+                      "sevenkingdoms\\robert.baratheon",
+                      "sevenkingdoms\\cersei.lannister",
+                      "sevenkingdoms\\DragonRider"
+                  ],
+                  "Remote Desktop Users" : [
+                      "sevenkingdoms\\Small Council",
+                      "sevenkingdoms\\Baratheon"
+                  ]
+              },
+              "security": ["enable_run_as_ppl"],
+              "security_vars": {}
+          }
+      }
+  }
+}

@@ -1,0 +1,12 @@
+[default]
+elastic ansible_host={{ip_range}}.51 dict_key=elastic ansible_connection=ssh ansible_ssh_common_args='-o StrictHostKeyChecking=no'
+
+[extensions]
+elastic
+
+[elastic_server]
+elastic
+
+[elastic_agent]
+dc04
+ws01
