@@ -9,7 +9,7 @@ ludus:
     windows:
       sysprep: true
     roles:
-      - curi0usJack.ludus_enable_mdi_gpo
+      - ludus_enable_mdi_gpo
       - bagelbyt3s.ludus_adfs.import_root_cert
     role_vars:
       adfs_CA: "sevenkingdoms-KINGSLANDING-CA"
@@ -23,7 +23,7 @@ ludus:
     windows:
       sysprep: true
     roles:
-      - curi0usJack.ludus_enable_mdi_gpo
+      - ludus_enable_mdi_gpo
       - bagelbyt3s.ludus_adfs.import_root_cert
     role_vars:
       adfs_CA: "sevenkingdoms-KINGSLANDING-CA"
@@ -37,7 +37,7 @@ ludus:
     windows:
       sysprep: true
     roles:
-      - curi0usJack.ludus_enable_mdi_gpo
+      - ludus_enable_mdi_gpo
       - bagelbyt3s.ludus_adfs.import_root_cert
     role_vars:
       adfs_CA: "sevenkingdoms-KINGSLANDING-CA"
@@ -64,7 +64,7 @@ ludus:
     windows:
       sysprep: true
     roles:
-      - curi0usJack.ludus_enable_mdi_gpo
+      - ludus_enable_mdi_gpo
       - bagelbyt3s.ludus_adfs.import_root_cert
     role_vars:
       adfs_CA: "sevenkingdoms-KINGSLANDING-CA"
